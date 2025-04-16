@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Occupation Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #555;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+        }
+        .error {
+            color: red;
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Occupation Prediction Form</h2>
+
+        <form method="POST" action="/predict">
+            <label for="Field_of_education">Field of Education:</label>
+            <select name="Field_of_education" required>
+                <option value="">Select</option>
+                <option value="General education">General education</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Social Science">Social Science</option>
+                <option value="Services">Services</option>
+            </select>
+
+            <label for="Educaional_level">Educational Level:</label>
+            <select name="Educaional_level" required>
+                <option value="">Select</option>
+                <option value="Primary">Primary</option>
+                <option value="Secondary">Secondary</option>
+                <option value="University">University</option>
+            </select>
+
+            <button type="submit">Predict Occupation</button>
+        </form>
+
+        <div class="result" id="result">
+            <!-- Prediction result will be shown here -->
+        </div>
+        <div class="error" id="error"></div>
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = new URLSearchParams(formData);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<p>Predicted Occupation: <b>${data.Occupation}</b></p>`;
+                document.getElementById('error').innerHTML = '';
+            })
+            .catch(error => {
+                const errorDiv = document.getElementById('error');
+                errorDiv.innerHTML = `<p>Sorry, something went wrong: ${error}</p>`;
+                document.getElementById('result').innerHTML = '';
+            });
+        });
+    </script>
+
+</body>
+</html>
